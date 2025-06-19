@@ -1,0 +1,5 @@
+__pycache__/*
+user_tokens/*.json
+output/*
+!output/note.txt
+.vscode/settings.json
