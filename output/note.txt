@@ -1,0 +1,10 @@
+# Folder for storing intermediate files
+
+# Used to export data to Google, Excel, etc..
+
+users.json - File containing list of {user_id, name, team}
+    - Generated from 'strava_app_team.generate_user_data()'
+    - Note: individual's user tokens must exist in 'user_tokens' directory
+teams.json -
+    - Generated from 'strava_app_team.generate_team_data()'
+    - Note: teams.json is dependant on 'users.json'. 'generate_user_data()' needs to be run first

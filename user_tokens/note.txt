@@ -1,0 +1,4 @@
+# This folder should be empty by default
+# This is where user tokens are saved when generated for an App
+
+# 'strava_app_api.save_user_token' should output to this directory
