@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass, field
 from datetime import datetime
 from math import floor
@@ -28,11 +27,23 @@ bonus_adventure_club = 100
 
 ## Helper functions
 def toAdvPts(time: float):
-    """@param time Adventure activity time in minutes"""
+    """Convert adventure activity time to points.
+    
+    Args:
+        time: Adventure activity time in minutes
+        
+    Returns:
+        Points earned for the activity
+    """
     return floor(time / 30) * adventure_points
 
 def round_all(dataclass_obj: dataclass, ndigits=2):
-    """Rounds all floats in dataclass to ndigits"""
+    """Rounds all floats in dataclass to ndigits.
+    
+    Args:
+        dataclass_obj: The dataclass object to round
+        ndigits: Number of decimal places to round to
+    """
     for f_name, f_obj in dataclass_obj.__dataclass_fields__.items():
         if f_obj.type is float:
             value = getattr(dataclass_obj, f_name)
@@ -48,7 +59,7 @@ class StravaStats:
     bike_distance: float = 0        # miles
     walk_distance: float = 0        # miles
     weightlift_time: float = 0      # minutes
-    stairstepper_time:float= 0      # minutes
+    stairstepper_time: float = 0    # minutes
     hiit_time: float = 0            # minutes
     rowing_distance: float = 0      # meters
     # adventure categories 
@@ -128,10 +139,13 @@ class UserPoints:
     golf:           int = 0
 
     def sumTotalBonus(self) -> int:
+        """Calculate total bonus points."""
         return sum(getattr(self, f) for f in self.bonus_fields)
     def sumTotalAdventure(self) -> int:
+        """Calculate total adventure points."""
         return sum(getattr(self, f) for f in self.adventure_fields)
     def sumTotalUnique(self) -> int:
+        """Calculate total unique achievement points."""
         return sum(getattr(self, f) for f in self.unique_fields)
 
 
@@ -307,10 +321,18 @@ class UserEC():
     
 
 def create_dataframe_from_users(user_results: List) -> pd.DataFrame:
-    """Convert list of UserEC objects to pandas DataFrame efficiently"""
-    data_rows = []
+    """Convert list of UserEC objects to pandas DataFrame efficiently.
+    
+    Args:
+        user_results: List of UserEC objects
+        
+    Returns:
+        pd.DataFrame: DataFrame containing user data
+    """
+    data_rows = [None] * len(user_results)
+    index = 0
+    
     for user in user_results:
-        # Extract key fields - customize based on what you need
         row = {
             'User_ID': user.user_id,
             'Team': 0,
@@ -355,6 +377,7 @@ def create_dataframe_from_users(user_results: List) -> pd.DataFrame:
             'Badminton': user.points.badminton,
             'Golf': user.points.golf,
         }
-        data_rows.append(row)
+        data_rows[index] = row
+        index += 1
     
     return pd.DataFrame(data_rows)
