@@ -1,5 +1,6 @@
 import json
 import os
+import pandas as pd
 
 from strava_app_settings import INTERMEDIATE_LOCATION
 import strava_app_api
@@ -87,3 +88,59 @@ def generate_team_data():
         json.dump(team_data, f, indent=2)
 
     return team_data
+
+
+def calculate_team_statistics(user_rankings_df):
+    """
+    Calculate team statistics from user rankings DataFrame.
+    
+    Args:
+        user_rankings_df (pd.DataFrame): DataFrame containing user rankings with columns:
+            - User_ID: user identifier
+            - Rank: user's individual rank
+            - Name: user's name (will be populated from user data)
+            - Team: team assignment (will be populated from user data)
+    
+    Returns:
+        pd.DataFrame: Team statistics with columns:
+            - Team: team number
+            - Name: team name
+            - MemberCount: number of team members
+            - ALL_Ave_Rank: average rank of all team members
+            - XC_Ave_Rank: average rank of top N members (where N is minimum team size)
+            - Min_Team_Size: minimum team size across all teams
+    """
+    # Load user data and populate names and team assignments
+    user_data = load_user_data()
+    for user in user_data:
+        user_rankings_df.loc[user_rankings_df['User_ID'] == user['user_id'], 'Name'] = user['name']
+        user_rankings_df.loc[user_rankings_df['User_ID'] == user['user_id'], 'Team'] = user['team']
+
+    # Generate team data
+    team_data = generate_team_data()
+    min_members = min(len(team['members']) for team in team_data)
+
+    # Calculate team statistics
+    team_stats = []
+    for team in team_data:
+        member_rank = user_rankings_df[user_rankings_df['Team'] == team['team']]['Rank'].sort_values()
+        ave_rank = member_rank.mean()
+        xc_rank = member_rank.head(min_members).mean()
+        team_stats.append([team['team'], team['name'], len(team['members']), ave_rank, xc_rank, min_members])
+        
+    team_stats = pd.DataFrame(team_stats, columns=['Team', 'Name', 'MemberCount', 'ALL_Ave_Rank', 'XC_Ave_Rank', 'Min_Team_Size'])
+    team_stats = team_stats.sort_values('XC_Ave_Rank').reset_index(drop=True)
+    
+    return team_stats
+
+
+def save(team_stats_df, filename='team_rankings.csv') -> None:
+    """
+    Save team statistics DataFrame to CSV file.
+    
+    Args:
+        team_stats_df (pd.DataFrame): Team statistics DataFrame
+        filename (str): Name of the CSV file to save (default: 'team_rankings.csv')
+    """
+    filepath = INTERMEDIATE_LOCATION + filename
+    team_stats_df.to_csv(filepath, index=False)
