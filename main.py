@@ -58,7 +58,8 @@ def main():
     if input("Please manually update team assignments in 'users.json'.\n"
              "Proceed with generating team stats? (y/n): ").lower() == "y":
         # Calculate team statistics using the new function
-        teams.save(teams.calculate_team_statistics(df), "team_rankings.csv")
+        team_stats = teams.calculate_team_statistics(df)
+        teams.save(team_stats, "team_rankings.csv")
 
     # Save to file
     # TODO: save to google sheet or excel
