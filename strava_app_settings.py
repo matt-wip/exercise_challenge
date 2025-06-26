@@ -5,11 +5,11 @@ from datetime import datetime
 # DO NOT SHARE THIS FILE
 #-------------------------------------------
 ## Exercise challenge settings
-CHALLENGE_NAME          = 'NAME HERE'     # name of the challenge (for the output file)
-TOKEN_LOCATION          = 'user_tokens/'    # folder path to save tokens to
-INTERMEDIATE_LOCATION   = 'output/'         # folder path to save retrieved/processed data from Strava. Prevent excess API calls
+CHALLENGE_NAME          = 'NAME HERE'       # name of the challenge (for the output file)
+TOKEN_LOCATION          = 'user_tokens/'    # folder path to save tokens to. End with '/'
+INTERMEDIATE_LOCATION   = 'output/'         # folder path to save retrieved/processed data from Strava. Prevents excess API calls. End with '/'
 
-START = int(datetime(2025, 2, 25).timestamp())  # year,month,day
+START = int(datetime(2025, 6, 25).timestamp())  # year,month,day
 END =   int(datetime(2025, 7, 25).timestamp())
 # PERMISSIONS='read_all'  # 'read', 'read_all'  # not used at the moment
 
