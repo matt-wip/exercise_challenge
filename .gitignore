@@ -1,5 +1,9 @@
 __pycache__/*
+
 user_tokens/*.json
 output/*
 !output/note.txt
+
 .vscode/settings.json
+strava_app_settings.py
+
