@@ -62,7 +62,8 @@ def save_user_token(user_id: str, user_code: str, overwrite=False) -> bool:
                         )
     if response.ok:
         strava_tokens = response.json()
-        with open(user_file, 'w') as outfile:
+        path = token_save_location + f"strava_tokens_{user_id}.json"
+        with open(path, 'w') as outfile:
             json.dump(strava_tokens, outfile)
     else:
         print(f"Error requesting {user_id}'s token.")
@@ -114,7 +115,7 @@ def get_user_activities(user_id:str):
     """
     user_token = get_user_token(user_id)
     if not user_token:
-        return None
+        return False
 
     strava_url = "https://www.strava.com/api/v3/activities"
     strava_params = {
@@ -129,6 +130,6 @@ def get_user_activities(user_id:str):
     
     if not activities_req.ok:
         print(f"Failed to retrieve {user_id}'s data")
-        return None
+        return False
 
     return activities_req.json()

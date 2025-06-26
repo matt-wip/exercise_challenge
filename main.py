@@ -9,7 +9,7 @@ def process_user(token):
     """Process a single user's data and return the UserEC object or None if failed."""
     try:
         user_ec = scorer.UserEC(token)
-        if user_ec.calculate_points():
+        if user_ec.calculate_points() != False:
             return user_ec
         else:
             print(f"Error obtaining Strava data for user {token}")
