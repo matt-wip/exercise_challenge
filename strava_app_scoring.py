@@ -75,6 +75,7 @@ class StravaStats:
     skiing_time: float = 0          # minutes
     badminton_time: float = 0       # minutes
     golf_time: float = 0            # minutes
+    inline_skate_time: float = 0    # minutes
     # unique categories
     firstOfMonth: bool = False
     lastOfMonth: bool = False
@@ -122,7 +123,7 @@ class UserPoints:
 
     adventure_fields :  list[str] = field(default_factory=lambda: [
         "pickleball", "yoga", "racquetball", "tennis", "soccer", 
-        "rock_climb", "surf", "kayak", "skiing", "badminton", "golf"
+        "rock_climb", "surf", "kayak", "skiing", "badminton", "golf", "inline_skate"
     ])
     total_adventure:    int = 0
     pickleball:     int = 0  
@@ -137,6 +138,7 @@ class UserPoints:
     skiing:         int = 0      
     badminton:      int = 0   
     golf:           int = 0
+    inline_skate:   int = 0
 
     def sumTotalBonus(self) -> int:
         """Calculate total bonus points."""
@@ -199,7 +201,7 @@ class UserEC():
                     self.stats.bike_distance += distance
                 case 'WALK' | 'HIKE':
                     self.stats.walk_distance += distance
-                case 'WEIGHTTRAINING' | 'WORKOUT':
+                case 'WEIGHTTRAINING':
                     self.stats.weightlift_time += duration
                 case 'STAIRSTEPPER':
                     self.stats.stairstepper_time += duration
@@ -232,6 +234,8 @@ class UserEC():
                     self.stats.badminton_time += duration
                 case 'GOLF':
                     self.stats.golf_time += duration
+                case 'INLINE_SKATE':
+                    self.stats.inline_skate_time += duration
 
         self._has_stats = True
         return True
@@ -298,6 +302,8 @@ class UserEC():
         self.points.skiing      = toAdvPts(self.stats.skiing_time)
         self.points.badminton   = toAdvPts(self.stats.badminton_time)
         self.points.golf        = toAdvPts(self.stats.golf_time)
+        self.points.inline_skate= toAdvPts(self.stats.inline_skate_time)
+
         number_of_adventures = sum(1 for adv in self.points.adventure_fields if (getattr(self.points, adv) > 0))
         self.points.club_adventure = 100 if (number_of_adventures >= 6) else 0
 
@@ -380,4 +386,4 @@ def create_dataframe_from_users(user_results: List) -> pd.DataFrame:
         data_rows[index] = row
         index += 1
     
-    return pd.DataFrame(data_rows)
+    return pd.DataFrame(data_rows).round(2)
